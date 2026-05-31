@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "TinyTicket.AppHost/TinyTicket.AppHost.csproj"
+  }
+}
