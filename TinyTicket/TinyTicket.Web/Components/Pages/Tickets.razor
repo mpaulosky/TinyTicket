@@ -1,0 +1,94 @@
+@page "/tickets"
+
+@rendermode  InteractiveServer
+@inject  TicketApiClient TicketApi
+
+<PageTitle>Tickets</PageTitle>
+
+<h1>Tickets</h1>
+
+<p>This page allows us to see and modify all of the tickets.</p>
+
+@if (_errorMessage is not null)
+{
+	<div class="alert alert-danger" role="alert">
+		@_errorMessage
+	</div>
+}
+
+@if( _tickets is null)
+{
+	<p><em>Loading...</em></p>
+}
+else if (_tickets.Count == 0)
+{
+	<p><em>No tickets found.</em></p>
+}
+else
+{
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Title</th>
+				<th>Description</th>
+				<th>Priority</th>
+        <th>Created</th>
+				<th>Completed</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var ticket in _tickets)
+			{
+				<tr>
+					<td>@ticket.Id</td>
+					<td>@ticket.TicketTitle</td>
+					<td>@ticket.TicketDescription</td>
+					<td>@ticket.Priority</td>
+					<td>@ticket.DateCreated?.ToShortDateString()</td>
+					<td>@ticket.DateCompleted?.ToShortDateString()</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+
+		private List<TicketModel>? _tickets;
+
+    private string? _errorMessage;
+
+		protected override async Task OnInitializedAsync()
+		{
+				await LoadTicketsAsync();
+		}
+
+    private async Task LoadTicketsAsync()
+		{
+				try
+				{
+						_errorMessage = null;
+						_tickets = await TicketApi.GetTicketsAsync();
+				}
+				catch (Exception ex)
+				{
+						_errorMessage = $"Failed loading tickets: {ex.Message}";
+				}
+		}
+
+		private async Task DeleteTicketAsync(int ticketId)
+		{
+				try
+				{
+						_errorMessage = null;
+						await TicketApi.DeleteTicketAsync(ticketId);
+						await LoadTicketsAsync();
+				}
+				catch (Exception ex)
+				{
+						_errorMessage = $"Failed deleting ticket: {ex.Message}";
+				}
+		}
+
+}
