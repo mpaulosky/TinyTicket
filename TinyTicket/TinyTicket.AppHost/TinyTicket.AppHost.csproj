@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.3.5">
+<Project Sdk="Aspire.AppHost.Sdk/13.6.1">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>41ebfcd0-3624-436b-9a45-5cc8d7116148</UserSecretsId>
+    <!-- ASPIRE010 (new in Aspire 13.6) flags AspireUseCliBundle=false: the AppHost restores the dashboard and DCP
+         packages instead of using the Aspire CLI bundle, which is all it needs. Remove once the bundle is adopted. -->
+    <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.Redis" Version="13.3.5" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.6.1" />
+    <!-- Transitive override for a security advisory: Aspire brings in MessagePack 2.5.302 (GHSA-qhrr-8q5h-9q3h) -->
+    <PackageReference Include="MessagePack" Version="2.5.307" />
   </ItemGroup>
 
 </Project>
